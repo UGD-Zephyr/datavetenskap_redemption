@@ -42,16 +42,18 @@ int main(int argc, char *argv[]){
 	STDIN_FILENO will tell tcgetattr that it should write the settings
 	of stdin to oldt*/
 	tcgetattr( STDIN_FILENO, &oldt);
+
 	/*now the settings will be copied*/
 	newt = oldt;
+
 	/*ICANON normally takes care that one line at a time will be processed
 	that means it will return if it sees a "\n" or an EOF or an EOL*/
 	newt.c_lflag &= ~(ICANON);
+
 	/*Those new settings will be set to STDIN
 	CSANOW tells tcsetattr to change attributes immediately. */
 	tcsetattr( STDIN_FILENO, TCSANOW, &newt);
 
-		introduction_function();
 		user_choice = main_menu_function();
 
 			if(user_choice == 1){
@@ -79,32 +81,32 @@ void introduction_function(){
 
 int main_menu_function(){
 
-	int function_loop_counter1;
 	int menu_arrow_position;
 	int inputted_keyboard_value;
 
-		menu_arrow_position = 2;
+		menu_arrow_position = 1;
 		inputted_keyboard_value = 0;
 
-		printf("EXPLANATORY TEXT...\n");
-
+            system("clear");
 			while(inputted_keyboard_value != 10){
 
-				system("clear");
 				menu_arrow_function(1, menu_arrow_position); printf("1. SAVE DATA TO FILE\n");
 				menu_arrow_function(2, menu_arrow_position); printf("2. SEARCH DATA FROM FILE\n");
 
-				system("stty -echo");
-				inputted_keyboard_value = getchar();
-				system("stty echo");
+                system("stty -echo");
+                inputted_keyboard_value = getchar();
+                system("stty echo");
 
 					if(inputted_keyboard_value == 65 && menu_arrow_position != MENU_ARROW_TOP){
+				        system("clear");
 						menu_arrow_position--;
 					}
 					else if(inputted_keyboard_value == 66 && menu_arrow_position != MENU_ARROW_BOTTOM){
+				        system("clear");
 						menu_arrow_position++;
 					}
 					else{
+                        system("clear");
 						menu_arrow_position = menu_arrow_position;
 					}
 			}
