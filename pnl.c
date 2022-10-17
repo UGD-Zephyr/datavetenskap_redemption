@@ -7,7 +7,7 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 
-#define STRING_LENGTH 50
+#define STRING_LENGTH 100
 #define FILE_PATH "/mnt/c/wsl_programming/c/c_projects/datavetenskap_redemption/pnl_list.txt"
 
 typedef struct {
@@ -18,22 +18,24 @@ typedef struct {
 
 } person_data;
 
-size_t count_persons_in_list(FILE *function_pointer);
+void save_person_data_list(FILE *function_file_pointer_save, person_data *function_pointer_save , int function_persons_in_list_save);
+void print_person_data_list(person_data *function_pointer_print , int function_persons_in_list_print);
+int count_persons_in_list(FILE *function_file_pointer);
 
 int main(int argc, char *argv[]){ 
 
+    int persons_in_list;
     char string_buffer[STRING_LENGTH];
     char character_buffer;
     FILE *file_pointer_read;
-    int loop_counter1;
-    size_t persons_in_list;
-    //person_data individual;
     person_data *person_data_struct_pointer;
 
         file_pointer_read = fopen(FILE_PATH, "r");
 
             persons_in_list = count_persons_in_list(file_pointer_read);
-            printf("There are %zu person(s) in the list.\n", persons_in_list);
+            printf("There are %d person(s) in the list.\n", persons_in_list);
+            printf("-------------------------------------------\n");
+            rewind(file_pointer_read);
 
             person_data_struct_pointer = (person_data *) malloc(persons_in_list * sizeof(person_data));
                 if(person_data_struct_pointer == NULL){
@@ -41,23 +43,13 @@ int main(int argc, char *argv[]){
                     exit(EXIT_FAILURE);
                 }
 
+            save_person_data_list(file_pointer_read, person_data_struct_pointer, persons_in_list);
+            print_person_data_list(person_data_struct_pointer, persons_in_list);
+
+            printf("-------------------------------------------\n");
             printf("Search for [N]ame, [A]ge or [O]ccupation: ");
             fgets(string_buffer, STRING_LENGTH, stdin);
             sscanf(string_buffer, "%c", &character_buffer);
-
-                for(loop_counter1 = 0; loop_counter1 < persons_in_list; loop_counter1++){
-                    fscanf(file_pointer_read, "%s\n", person_data_struct_pointer[loop_counter1].name);
-                    fscanf(file_pointer_read, "%d\n", &person_data_struct_pointer[loop_counter1].age);
-                    fscanf(file_pointer_read, "%s\n", person_data_struct_pointer[loop_counter1].occupation);
-
-
-                }
-
-                for(loop_counter1 = 0; loop_counter1 < persons_in_list; loop_counter1++){
-                    printf("%s", (person_data_struct_pointer + loop_counter1)->name);
-                    printf("%d", (person_data_struct_pointer + loop_counter1)->age);
-                    printf("%s", (person_data_struct_pointer + loop_counter1)->occupation);
-                }
 
                 /*
                 if(character_buffer == 78|| character_buffer == 110){
@@ -75,16 +67,46 @@ int main(int argc, char *argv[]){
 return 0;
 } 
 
-size_t count_persons_in_list(FILE *function_pointer){
+void print_person_data_list(person_data *function_pointer_print , int function_persons_in_list_print){
+
+    int function_loop_counter1;
+
+        for(function_loop_counter1 = 0; function_loop_counter1 < function_persons_in_list_print; function_loop_counter1++){
+              printf("Name:         %s", (function_pointer_print + function_loop_counter1)->name);
+              printf("Age:          %d\n", (function_pointer_print + function_loop_counter1)->age);
+              printf("Occupation:   %s", (function_pointer_print + function_loop_counter1)->occupation);
+                  if(function_loop_counter1 < (function_persons_in_list_print - 1)){
+                          printf("\n");
+                  }
+        }
+}
+
+void save_person_data_list(FILE *function_file_pointer_save, person_data *function_pointer_save , int function_persons_in_list_save){
+
+    int function_loop_counter1;
+    char function_string_buffer[STRING_LENGTH];
+
+        for(function_loop_counter1 = 0; function_loop_counter1 < function_persons_in_list_save; function_loop_counter1++){
+             fgets((function_pointer_save + function_loop_counter1)->name, STRING_LENGTH, function_file_pointer_save);
+             fgets(function_string_buffer, STRING_LENGTH, function_file_pointer_save);
+             sscanf(function_string_buffer, "%d", &(function_pointer_save + function_loop_counter1)->age);
+             fgets((function_pointer_save + function_loop_counter1)->occupation, STRING_LENGTH, function_file_pointer_save);
+         }
+
+
+
+}
+
+int count_persons_in_list(FILE *function_file_pointer){
 
     char file_character;
-    size_t function_amount_of_lines;
-    size_t function_amount_of_persons;
+    int function_amount_of_lines;
+    int function_amount_of_persons;
 
         function_amount_of_lines = 0;
         function_amount_of_persons = 0;
 
-        while((file_character = fgetc(function_pointer)) != EOF){
+        while((file_character = fgetc(function_file_pointer)) != EOF){
             if(file_character == '\n'){
                 function_amount_of_lines++;
             }
