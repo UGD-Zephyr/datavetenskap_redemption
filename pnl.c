@@ -1,11 +1,16 @@
 /* Programmer: Per Stoor
  * Date: 2022-10-15
- * Last changed: 2022-10-15
+ * Last changed: 2022-10-18
  * Type of program: Trying some structs and file functions together.
+ *
+ * NOTES:
+ * Working on making the search function, if people in the list have
+ * the same age I need to think about how to display all of them...
  */
 
 #include <stdio.h> 
 #include <stdlib.h> 
+#include <string.h>
 
 #define STRING_LENGTH 100
 #define FILE_PATH "/mnt/c/wsl_programming/c/c_projects/datavetenskap_redemption/pnl_list.txt"
@@ -20,13 +25,12 @@ typedef struct {
 
 void save_person_data_list(FILE *function_file_pointer_save, person_data *function_pointer_save , int function_persons_in_list_save);
 void print_person_data_list(person_data *function_pointer_print , int function_persons_in_list_print);
+void search_data_list(person_data *function_pointer_search, int function_persons_in_list_search);
 int count_persons_in_list(FILE *function_file_pointer);
 
 int main(int argc, char *argv[]){ 
 
     int persons_in_list;
-    char string_buffer[STRING_LENGTH];
-    char character_buffer;
     FILE *file_pointer_read;
     person_data *person_data_struct_pointer;
 
@@ -45,20 +49,8 @@ int main(int argc, char *argv[]){
 
             save_person_data_list(file_pointer_read, person_data_struct_pointer, persons_in_list);
             print_person_data_list(person_data_struct_pointer, persons_in_list);
-
             printf("-------------------------------------------\n");
-            printf("Search for [N]ame, [A]ge or [O]ccupation: ");
-            fgets(string_buffer, STRING_LENGTH, stdin);
-            sscanf(string_buffer, "%c", &character_buffer);
-
-                /*
-                if(character_buffer == 78|| character_buffer == 110){
-                }
-                else if(character_buffer == 65|| character_buffer == 97){
-                }
-                else if(character_buffer == 79|| character_buffer == 111){
-                }
-                */
+            search_data_list(person_data_struct_pointer, persons_in_list);
 
             free(person_data_struct_pointer);
 
@@ -66,6 +58,19 @@ int main(int argc, char *argv[]){
 
 return 0;
 } 
+
+void save_person_data_list(FILE *function_file_pointer_save, person_data *function_pointer_save , int function_persons_in_list_save){
+
+    int function_loop_counter1;
+    char function_string_buffer[STRING_LENGTH];
+
+        for(function_loop_counter1 = 0; function_loop_counter1 < function_persons_in_list_save; function_loop_counter1++){
+             fgets((function_pointer_save + function_loop_counter1)->name, STRING_LENGTH, function_file_pointer_save);
+             fgets(function_string_buffer, STRING_LENGTH, function_file_pointer_save);
+             sscanf(function_string_buffer, "%d", &(function_pointer_save + function_loop_counter1)->age);
+             fgets((function_pointer_save + function_loop_counter1)->occupation, STRING_LENGTH, function_file_pointer_save);
+         }
+}
 
 void print_person_data_list(person_data *function_pointer_print , int function_persons_in_list_print){
 
@@ -81,19 +86,84 @@ void print_person_data_list(person_data *function_pointer_print , int function_p
         }
 }
 
-void save_person_data_list(FILE *function_file_pointer_save, person_data *function_pointer_save , int function_persons_in_list_save){
+void search_data_list(person_data *function_pointer_search, int function_persons_in_list_search){
 
     int function_loop_counter1;
+    int function_age_buffer;
+    int string_compare_value;
+    char function_character_buffer;
     char function_string_buffer[STRING_LENGTH];
 
-        for(function_loop_counter1 = 0; function_loop_counter1 < function_persons_in_list_save; function_loop_counter1++){
-             fgets((function_pointer_save + function_loop_counter1)->name, STRING_LENGTH, function_file_pointer_save);
-             fgets(function_string_buffer, STRING_LENGTH, function_file_pointer_save);
-             sscanf(function_string_buffer, "%d", &(function_pointer_save + function_loop_counter1)->age);
-             fgets((function_pointer_save + function_loop_counter1)->occupation, STRING_LENGTH, function_file_pointer_save);
-         }
+        printf("Search for [N]ame, [A]ge or [O]ccupation: ");
+            fgets(function_string_buffer, STRING_LENGTH, stdin);
+            sscanf(function_string_buffer, "%c", &function_character_buffer);
 
+                if(function_character_buffer == 78|| function_character_buffer == 110){
+                    printf("Enter name: ");
+                    fgets(function_string_buffer, STRING_LENGTH, stdin);
+                    printf("-------------------------------------------\n");
 
+                        for(function_loop_counter1 = 0;
+                            function_loop_counter1 < function_persons_in_list_search;
+                            function_loop_counter1++){
+
+                                string_compare_value = strcmp(function_string_buffer, (function_pointer_search + function_loop_counter1)->name);
+                                printf("string_compare_value = %d\n", string_compare_value);
+                                    if(string_compare_value == 0){
+                                        printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
+                                        printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
+                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
+                                        break;
+                                    }
+                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
+                                        printf("Search has no match...\n");
+                                    }
+                        }
+                }
+                else if(function_character_buffer == 65|| function_character_buffer == 97){
+                    printf("Enter age: ");
+                    fgets(function_string_buffer, STRING_LENGTH, stdin);
+                    sscanf(function_string_buffer, "%d", &function_age_buffer);
+
+                        for(function_loop_counter1 = 0;
+                            function_loop_counter1 < function_persons_in_list_search;
+                            function_loop_counter1++){
+
+                                    printf("function_age_buffer =   %d\n", function_age_buffer);
+                                    printf("pointer =               %d\n", (function_pointer_search + function_loop_counter1)->age);
+                                    if((function_age_buffer) == ((function_pointer_search + function_loop_counter1)->age)){
+                                        printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
+                                        printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
+                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
+                                        break;
+                                    }
+                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
+                                        printf("Search has no match...\n");
+                                    }
+                        }
+                }
+                else if(function_character_buffer == 79|| function_character_buffer == 111){
+                    printf("Enter occupation: ");
+                    fgets(function_string_buffer, STRING_LENGTH, stdin);
+                    printf("-------------------------------------------\n");
+
+                        for(function_loop_counter1 = 0;
+                            function_loop_counter1 < function_persons_in_list_search;
+                            function_loop_counter1++){
+
+                                string_compare_value = strcmp(function_string_buffer, (function_pointer_search + function_loop_counter1)->occupation);
+                                printf("string_compare_value = %d\n", string_compare_value);
+                                    if(string_compare_value == 0){
+                                        printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
+                                        printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
+                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
+                                        break;
+                                    }
+                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
+                                        printf("Search has no match...\n");
+                                    }
+                        }
+                }
 
 }
 
