@@ -1,11 +1,15 @@
 /* Programmer: Per Stoor
  * Date: 2022-10-15
- * Last changed: 2022-10-18
+ * Last changed: 2022-10-19
  * Type of program: Trying some structs and file functions together.
  *
  * NOTES:
  * Working on making the search function, if people in the list have
  * the same age I need to think about how to display all of them...
+ *
+ * UPDATE:
+ * if people share data they will be displayed together. Now I am trying to loop
+ * the search list...having some issues currently
  */
 
 #include <stdio.h> 
@@ -91,10 +95,15 @@ void search_data_list(person_data *function_pointer_search, int function_persons
     int function_loop_counter1;
     int function_age_buffer;
     int string_compare_value;
+    int item_exist_in_list_flag;
     char function_character_buffer;
     char function_string_buffer[STRING_LENGTH];
 
-        printf("Search for [N]ame, [A]ge or [O]ccupation: ");
+        item_exist_in_list_flag = 0;
+
+        while(function_character_buffer != 81 || function_character_buffer != 113){
+
+        printf("Search for [N]ame, [A]ge, [O]ccupation or [Q]uit: ");
             fgets(function_string_buffer, STRING_LENGTH, stdin);
             sscanf(function_string_buffer, "%c", &function_character_buffer);
 
@@ -108,17 +117,16 @@ void search_data_list(person_data *function_pointer_search, int function_persons
                             function_loop_counter1++){
 
                                 string_compare_value = strcmp(function_string_buffer, (function_pointer_search + function_loop_counter1)->name);
-                                printf("string_compare_value = %d\n", string_compare_value);
                                     if(string_compare_value == 0){
                                         printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
                                         printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
-                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
-                                        break;
-                                    }
-                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
-                                        printf("Search has no match...\n");
+                                        printf("Occupation: %s\n",(function_pointer_search + function_loop_counter1)->occupation);
+                                        item_exist_in_list_flag = 1;
                                     }
                         }
+                            if(item_exist_in_list_flag == 0){
+                                printf("Search has no match...\n");
+                            }
                 }
                 else if(function_character_buffer == 65|| function_character_buffer == 97){
                     printf("Enter age: ");
@@ -129,18 +137,17 @@ void search_data_list(person_data *function_pointer_search, int function_persons
                             function_loop_counter1 < function_persons_in_list_search;
                             function_loop_counter1++){
 
-                                    printf("function_age_buffer =   %d\n", function_age_buffer);
-                                    printf("pointer =               %d\n", (function_pointer_search + function_loop_counter1)->age);
                                     if((function_age_buffer) == ((function_pointer_search + function_loop_counter1)->age)){
                                         printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
                                         printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
-                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
-                                        break;
-                                    }
-                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
-                                        printf("Search has no match...\n");
+                                        printf("Occupation: %s\n",(function_pointer_search + function_loop_counter1)->occupation);
+                                        item_exist_in_list_flag = 1;
                                     }
                         }
+                            if(item_exist_in_list_flag == 0){
+                                printf("Search has no match...\n");
+
+                            }
                 }
                 else if(function_character_buffer == 79|| function_character_buffer == 111){
                     printf("Enter occupation: ");
@@ -152,19 +159,19 @@ void search_data_list(person_data *function_pointer_search, int function_persons
                             function_loop_counter1++){
 
                                 string_compare_value = strcmp(function_string_buffer, (function_pointer_search + function_loop_counter1)->occupation);
-                                printf("string_compare_value = %d\n", string_compare_value);
                                     if(string_compare_value == 0){
                                         printf("Name:       %s",(function_pointer_search + function_loop_counter1)->name);
                                         printf("Age:        %d\n",(function_pointer_search + function_loop_counter1)->age);
-                                        printf("Occupation: %s",(function_pointer_search + function_loop_counter1)->occupation);
-                                        break;
-                                    }
-                                    else if(function_loop_counter1 == (function_persons_in_list_search -1)){
-                                        printf("Search has no match...\n");
+                                        printf("Occupation: %s\n",(function_pointer_search + function_loop_counter1)->occupation);
+                                        item_exist_in_list_flag = 1;
                                     }
                         }
-                }
+                            if(item_exist_in_list_flag == 0){
+                                printf("Search has no match...\n");
+                            }
 
+                }
+        }
 }
 
 int count_persons_in_list(FILE *function_file_pointer){
