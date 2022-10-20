@@ -1,1 +1,4 @@
 Makefile
+struct_list
+struct_list.c
+struct_list_notes.txt

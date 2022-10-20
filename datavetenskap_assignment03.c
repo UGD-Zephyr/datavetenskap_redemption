@@ -41,8 +41,6 @@ int main(int argc, char *argv[]){
         file_pointer_read = fopen(FILE_PATH, "r");
 
             persons_in_list = count_persons_in_list(file_pointer_read);
-            printf("There are %d person(s) in the list.\n", persons_in_list);
-            printf("-------------------------------------------\n");
             rewind(file_pointer_read);
 
             person_data_struct_pointer = (person_data *) malloc(persons_in_list * sizeof(person_data));
@@ -52,8 +50,6 @@ int main(int argc, char *argv[]){
                 }
 
             save_person_data_list(file_pointer_read, person_data_struct_pointer, persons_in_list);
-            print_person_data_list(person_data_struct_pointer, persons_in_list);
-            printf("-------------------------------------------\n");
             search_data_list(person_data_struct_pointer, persons_in_list);
 
             free(person_data_struct_pointer);
@@ -99,13 +95,12 @@ void search_data_list(person_data *function_pointer_search, int function_persons
     char function_character_buffer;
     char function_string_buffer[STRING_LENGTH];
 
-        item_exist_in_list_flag = 0;
-
-        while(function_character_buffer != 81 || function_character_buffer != 113){
-
-        printf("Search for [N]ame, [A]ge, [O]ccupation or [Q]uit: ");
+            printf("Search for [N]ame, [A]ge, [O]ccupation or [Q]uit: ");
             fgets(function_string_buffer, STRING_LENGTH, stdin);
             sscanf(function_string_buffer, "%c", &function_character_buffer);
+
+            while((function_character_buffer != 81) && (function_character_buffer != 113)){
+                item_exist_in_list_flag = 0;
 
                 if(function_character_buffer == 78|| function_character_buffer == 110){
                     printf("Enter name: ");
@@ -132,6 +127,7 @@ void search_data_list(person_data *function_pointer_search, int function_persons
                     printf("Enter age: ");
                     fgets(function_string_buffer, STRING_LENGTH, stdin);
                     sscanf(function_string_buffer, "%d", &function_age_buffer);
+                    printf("-------------------------------------------\n");
 
                         for(function_loop_counter1 = 0;
                             function_loop_counter1 < function_persons_in_list_search;
@@ -171,7 +167,13 @@ void search_data_list(person_data *function_pointer_search, int function_persons
                             }
 
                 }
-        }
+
+            printf("-------------------------------------------\n");
+            printf("Search for [N]ame, [A]ge, [O]ccupation or [Q]uit: ");
+            fgets(function_string_buffer, STRING_LENGTH, stdin);
+            sscanf(function_string_buffer, "%c", &function_character_buffer);
+
+            }
 }
 
 int count_persons_in_list(FILE *function_file_pointer){
